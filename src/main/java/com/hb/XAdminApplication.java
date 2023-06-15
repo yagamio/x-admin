@@ -1,3 +1,6 @@
+/**
+ * Happy Badminton Administration Platform project
+ */
 package com.hb;
 
 import org.springframework.boot.SpringApplication;
