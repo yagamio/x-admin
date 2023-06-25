@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     username: root
-    password: 123456
-    url: jdbc:mysql:///xdb
+    password: happybadminton
+    url: jdbc:mysql:///happyb
   redis:
     port: 6379
     host: localhost
