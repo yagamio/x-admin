@@ -27,15 +27,32 @@ public class UserController {
     @GetMapping("/all")
     public Result<List<User>> getAllUser(){
         List<User> list = userService.list();
-        return Result.success(list);
+        return Result.success(list, "Access successful");
     }
 
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody User user) {
         Map<String, Object> data = userService.login(user);
         if (data != null) {
-            return Result.success();
+            return Result.success(data);
         }
         return Result.fail(20002, "Incorrect username or password");
     }
+
+    @GetMapping("/info")
+    public Result<Map<String, Object>> getUserInfo(@RequestParam("token") String token) {
+        // 根据token获取用户信息，redis
+        Map<String, Object> data = userService.getUserInfo(token);
+        if(data != null) {
+            return Result.success(data);
+        }
+        return Result.fail(20003, "Invalid login information.  Please log in again.");
+    }
+
+    @PostMapping("/logout")
+    public Result<?> logout(@RequestHeader("X-Token") String token) {
+        userService.logout(token);
+        return Result.success();
+    }
+
 }
