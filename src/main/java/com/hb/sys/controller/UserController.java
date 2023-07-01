@@ -6,9 +6,9 @@ import com.hb.common.vo.Result;
 import com.hb.sys.entity.User;
 import com.hb.sys.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +26,9 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/all")
     public Result<List<User>> getAllUser(){
@@ -81,7 +84,29 @@ public class UserController {
 
     @PostMapping
     public Result<?> addUser(@RequestBody User user) {
+        // 注意：每次生成的密码是不一样的，会对登陆逻辑产生影响
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);
         return Result.success("User successfully added");
     }
+
+    @PutMapping
+    public Result<?> updateUser(@RequestBody User user) {
+        user.setPassword(null);
+        userService.updateById(user);
+        return Result.success("Updated successfully");
+    }
+
+    @GetMapping("/{id}")
+    public Result<User> getUserById(@PathVariable("id") Integer id) {
+        User user = userService.getById(id);
+        return Result.success(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<User> deleteUserById(@PathVariable("id") Integer id) {
+        userService.removeById(id);
+        return Result.success("Removed successfully");
+    }
+
 }
